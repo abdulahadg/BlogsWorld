@@ -1,0 +1,6 @@
+{
+  "name": "Authority Blog and Growth Platform",
+  "description": "A high-performance, SEO-optimized, monetization-ready authority blogging and digital publishing platform with an interactive content editor, dynamic ad network placements, affiliate monetization blocks, performance tracking, and schema-markup generated builders.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
