@@ -83,7 +83,7 @@ const DEFAULT_SUBSCRIBERS: Subscriber[] = [
 
 export default function App() {
   // Navigation & Page routing States
-  const [activePage, setActivePage] = useState<'home' | 'post' | 'category' | 'about' | 'contact'>('home');
+  const [activePage, setActivePage] = useState<'home' | 'post' | 'category' | 'about' | 'contact' | 'admin'>('home');
   const [activePostSlug, setActivePostSlug] = useState<string | null>(null);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   
@@ -99,12 +99,14 @@ export default function App() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>(DEFAULT_SUBSCRIBERS);
 
   // Modal displays toggle triggers
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [trustPageId, setTrustPageId] = useState<string | null>(null);
 
   // Hero newsletter state
   const [heroEmail, setHeroEmail] = useState('');
   const [heroSubscribed, setHeroSubscribed] = useState(false);
+
+  // Carousel slide state
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   // Latest Articles pagination simulator
   const [visiblePageCount, setVisiblePageCount] = useState(1);
@@ -183,6 +185,17 @@ export default function App() {
       }
     }
   }, [adSettings.adLayoutMode, adSettings.adSenseHeaderScript]);
+
+  // Auto-slide carousel every 6 seconds
+  useEffect(() => {
+    const featuredList = articles.filter(a => a.featured || a.editorPick || a.trending).slice(0, 4);
+    const len = featuredList.length > 0 ? featuredList.length : articles.slice(0, 4).length;
+    if (len <= 1) return;
+    const interval = setInterval(() => {
+      setCarouselIndex(prev => (prev + 1) % len);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [articles]);
 
   // Sync state to localStorage when updated
   const syncArticles = (updated: Article[]) => {
@@ -277,13 +290,20 @@ export default function App() {
   const activeCategory = categories.find(cat => cat.id === activeCategoryId);
 
   // Sorting featured content
-  const featuredArticle = articles.find(a => a.featured) || articles[0];
+  const carouselArticles = articles.length > 0 
+    ? (articles.filter(a => a.featured || a.editorPick || a.trending).length > 0 
+        ? articles.filter(a => a.featured || a.editorPick || a.trending).slice(0, 4) 
+        : articles.slice(0, 4)) 
+    : [];
+  const currentCarouselArticle = carouselArticles[carouselIndex] || carouselArticles[0] || null;
+
+  const featuredArticle = currentCarouselArticle || articles[0];
   const editorPicks = articles.filter(a => a.editorPick && a.id !== featuredArticle?.id);
   const trendingArticles = articles.filter(a => a.trending);
   const popularArticles = [...articles].sort((a, b) => b.views - a.views).slice(0, 4);
 
   // Paginator slice for latest articles
-  const latestArticlesDraft = articles.filter(a => a.id !== featuredArticle?.id);
+  const latestArticlesDraft = articles.filter(a => !carouselArticles.some(ca => ca.id === a.id));
   const visibleLatestCount = visiblePageCount * 3;
   const visibleLatestArticles = latestArticlesDraft.slice(0, visibleLatestCount);
 
@@ -364,7 +384,10 @@ export default function App() {
           }
           window.scrollTo(0, 0);
         }}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenAdmin={() => {
+          setActivePage('admin');
+          window.scrollTo(0, 0);
+        }}
         onOpenPage={(id) => {
           if (id === 'about' || id === 'contact') {
             setActivePage(id);
@@ -387,145 +410,197 @@ export default function App() {
           <div id="homepage-root">
             
             {/* HERO SECTION WITH CURATED CONTENT & LEAD NEWSLETTER */}
-            <section className={`relative text-white py-12 md:py-20 overflow-hidden bg-gradient-to-r ${style.heroGradient}`} id="niche-hero">
-              <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px]"></div>
+            <section className="relative py-14 md:py-20 overflow-hidden bg-slate-50 border-b border-gray-100" id="niche-hero">
+              {/* Dynamic subtle glowing background blobs for visual depth and premium feel */}
+              <div className="absolute top-12 left-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="absolute bottom-12 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
               
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
                   
                   {/* Curated Blog introduction & lead subscription block */}
-                  <div className="lg:col-span-7 space-y-6">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-widest text-orange-400 uppercase bg-orange-950/80 px-3 py-1 rounded-full border border-orange-900/60 shadow-sm leading-none">
-                      <Sparkles className="w-3.5 h-3.5 animate-pulse" /> Growth & Authority Platform
-                    </span>
-                    <h1 className="text-3xl md:text-5xl font-extrabold font-display leading-tight tracking-tight text-white m-0">
-                      Systematic blueprints for <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-405">athletic progress</span>.
-                    </h1>
-                    <p className="text-sm md:text-base text-slate-300 leading-relaxed font-light max-w-xl">
-                      Unlock your peak athletic potential. Our scientific training platform delivers expert-vetted muscle mechanics, physical conditioning plans, and sports-performance dietary blueprints built for daily progress.
-                    </p>
-
-                    {/* Newsletter Subscription CTAs */}
-                    <div className="bg-white/5 border border-white/10 p-5 rounded-2xl max-w-lg backdrop-blur-md">
-                      {heroSubscribed ? (
-                        <div className="flex items-center gap-3 text-emerald-400 text-sm font-semibold">
-                          <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                          <span>Access Granted! Check your inbox for your physical training protocols guide.</span>
-                        </div>
-                      ) : (
-                        <form 
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            if (!heroEmail) return;
-                            subscribeEmail(heroEmail, 'hero-section');
-                            setHeroSubscribed(true);
-                          }}
-                          className="space-y-3"
-                        >
-                          <p className="text-xs font-mono font-bold uppercase tracking-wider text-orange-400 leading-tight">Join 48,000+ Active Athletes</p>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <input
-                              type="email"
-                              required
-                              value={heroEmail}
-                              onChange={(e) => setHeroEmail(e.target.value)}
-                              placeholder="Enter your email address..."
-                              className="w-full bg-slate-900/60 border border-slate-750 px-4 py-2.5 rounded-xl text-xs text-white placeholder-slate-400 outline-none focus:ring-1 focus:ring-orange-400"
-                            />
-                            <button
-                              type="submit"
-                              className={`sm:w-auto font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider text-slate-950 cursor-pointer bg-amber-400 hover:bg-amber-500`}
-                            >
-                              Join Club
-                            </button>
-                          </div>
-                          <p className="text-[10px] text-slate-400">✓ Secure privacy standard. Your credentials remain 100% confidential.</p>
-                        </form>
-                      )}
+                  <div className="lg:col-span-5 flex flex-col justify-center space-y-6 text-left">
+                    <div className="space-y-4">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-mono font-bold tracking-wider text-orange-700 bg-orange-100/60 border border-orange-200 px-3 py-1.5 rounded-full shadow-2xs w-fit">
+                        <Sparkles className="w-3.5 h-3.5 text-orange-550 animate-pulse" /> Certified Athletic Medicine
+                      </span>
+                      <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display leading-[1.1] tracking-tight text-slate-900 m-0">
+                        Systematic blueprints for <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">athletic progress</span>.
+                      </h1>
+                      <p className="text-sm text-gray-600 leading-relaxed font-light max-w-xl">
+                        A peer-reviewed repository for strength athletes, runners, and lifters. Our clinical-grade sports science training platform transforms complex laboratory data into direct, high-yield progressive loading guides.
+                      </p>
                     </div>
                   </div>
+ 
+                  {/* Hero Right Side: Featured Spot Article Display (Horizontal Editorial Layout with Carousel transition) */}
+                  {carouselArticles.length > 0 && (
+                    <div className="lg:col-span-7 flex flex-col justify-between">
+                      <div className="relative flex-grow flex items-stretch">
+                        
+                        {carouselArticles.map((art, idx) => {
+                          const isActive = idx === carouselIndex;
+                          return (
+                            <div 
+                              key={art.id}
+                              onClick={() => {
+                                if (isActive) {
+                                  setActivePostSlug(art.slug);
+                                  setActivePage('post');
+                                  window.scrollTo(0,0);
+                                }
+                              }}
+                              className={`bg-white border border-gray-150 hover:border-orange-500/40 rounded-3xl overflow-hidden shadow-xs hover:shadow-md cursor-pointer group transition-all duration-500 ease-in-out absolute inset-0 flex flex-col sm:flex-row w-full ${
+                                isActive 
+                                  ? 'opacity-100 scale-100 z-10 pointer-events-auto shadow-sm' 
+                                  : 'opacity-0 scale-98 z-0 pointer-events-none'
+                              }`}
+                            >
+                              {/* Interactive glass card corner highlight */}
+                              <div className="absolute top-0 right-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-orange-550 border-r-orange-550 opacity-25 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                  {/* Hero Right Side: Featured Spot Article Display */}
-                  {featuredArticle && (
-                    <div className="lg:col-span-5">
-                      <div 
-                        onClick={() => {
-                          setActivePostSlug(featuredArticle.slug);
-                          setActivePage('post');
-                          window.scrollTo(0,0);
-                        }}
-                        className="bg-white/10 border border-white/10 hover:border-orange-500/50 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-md cursor-pointer group transition-all"
-                      >
-                        <div className="relative h-48 sm:h-56">
-                          <img 
-                            src={featuredArticle.featuredImage} 
-                            alt={featuredArticle.title} 
-                            className="w-full h-full object-cover opacity-90 group-hover:scale-102 transition-transform duration-500"
-                          />
-                          <span className="absolute top-4 left-4 bg-orange-600 text-white font-mono text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded">
-                            Featured Post
-                          </span>
-                        </div>
-                        <div className="p-5 sm:p-6 space-y-2">
-                          <span className="text-[10px] font-mono font-bold text-orange-400 uppercase tracking-widest">{featuredArticle.readTime}</span>
-                          <h3 className="text-base sm:text-lg font-bold font-display text-white group-hover:text-orange-300 transition-colors leading-snug line-clamp-2">
-                            {featuredArticle.title}
-                          </h3>
-                          <p className="text-xs text-slate-300 font-light line-clamp-3 leading-relaxed">
-                            {featuredArticle.excerpt}
-                          </p>
-                          <div className="pt-2 flex items-center justify-between text-xs text-orange-300 font-semibold">
-                            <span>Read Full Guide &rarr;</span>
-                            <span className="text-[10px] font-mono text-slate-400">{featuredArticle.publishDate}</span>
+                              {/* Image element occupying left portion */}
+                              <div className="relative w-full sm:w-2/5 min-h-[160px] sm:min-h-full overflow-hidden flex-shrink-0 bg-gray-50">
+                                <img 
+                                  src={art.featuredImage} 
+                                  alt={art.title} 
+                                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-550"
+                                />
+                                <span className="absolute top-3 left-3 bg-slate-900/90 text-[8px] tracking-widest font-mono font-bold text-white uppercase px-2.5 py-1 rounded border border-white/10 shadow-sm leading-none">
+                                  {idx === 0 ? 'Featured Blueprint' : 'Curated Spotlight'}
+                                </span>
+                              </div>
+                              
+                              {/* Content element occupying the right portion */}
+                              <div className="p-6 sm:p-7 sm:w-3/5 flex flex-col justify-between flex-grow space-y-4">
+                                <div className="space-y-3">
+                                  <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono font-bold text-orange-655 text-orange-600 uppercase tracking-widest">
+                                    <span>{categories.find(c => c.id === art.categoryId)?.name || 'TRAINING'}</span>
+                                    <span>•</span>
+                                    <span className="text-gray-400 flex items-center gap-1 font-sans">
+                                      <Clock className="w-3 h-3 text-gray-400" /> {art.readTime}
+                                    </span>
+                                  </div>
+                                  <h3 className="text-base sm:text-lg md:text-xl font-extrabold font-display text-gray-900 group-hover:text-orange-600 transition-colors leading-snug line-clamp-2 m-0">
+                                    {art.title}
+                                  </h3>
+                                  <p className="text-xs text-gray-500 font-light line-clamp-3 leading-relaxed m-0">
+                                    {art.excerpt}
+                                  </p>
+                                </div>
+                                
+                                <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-mono font-bold text-orange-600 group-hover:text-orange-700 select-none">
+                                  <div className="flex items-center gap-1 transition-colors uppercase tracking-wider text-[10px]">
+                                    <span>Read In-Depth Blueprint</span>
+                                    <span className="transform group-hover:translate-x-1 transition-transform duration-200 text-sm font-sans font-light">&rarr;</span>
+                                  </div>
+                                  <span className="text-[10px] font-mono text-gray-400 flex items-center gap-1 font-light">
+                                    <Calendar className="w-3 h-3 text-gray-400" /> {art.publishDate}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                        {/* Dummy layout spacer to let the absolute container maintain healthy dimensions */}
+                        <div className="invisible flex flex-col sm:flex-row w-full h-full pointer-events-none">
+                          <div className="w-full sm:w-2/5 min-h-[220px] sm:min-h-[280px]"></div>
+                          <div className="p-6 sm:p-7 sm:w-3/5 space-y-4">
+                            <div className="space-y-3">
+                              <div className="h-1 animate-pulse bg-gray-200 rounded"></div>
+                              <h3 className="text-base sm:text-lg md:text-xl font-extrabold leading-snug line-clamp-2">Spacer</h3>
+                              <p className="text-xs">This is a layout height placeholder for absolute carousel items.</p>
+                            </div>
                           </div>
                         </div>
+
+                      </div>
+
+                      {/* Carousel Indicator Navigation Controls */}
+                      <div className="flex items-center justify-center sm:justify-start gap-4 mt-4 select-none">
+                        <div className="flex gap-2">
+                          {carouselArticles.map((_, idx) => {
+                            const isActive = idx === carouselIndex;
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => setCarouselIndex(idx)}
+                                aria-label={`Go to slide ${idx + 1}`}
+                                className={`cursor-pointer transition-all duration-300 rounded-full h-1.5 ${
+                                  isActive 
+                                    ? 'w-6 bg-orange-600' 
+                                    : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                                }`}
+                              />
+                            );
+                          })}
+                        </div>
+                        <span className="text-[10px] font-mono text-gray-400 tracking-wider font-semibold uppercase">
+                          Auto-rotates • 6s
+                        </span>
                       </div>
                     </div>
                   )}
-
+ 
                 </div>
               </div>
             </section>
 
-            {/* INTEGRATED AD PLACEMENT below hero */}
-            <div className="max-w-7xl mx-auto px-4 mt-8" id="home-infeed-ad">
-              <AdContainer slot="infeed" settings={adSettings} onAdClick={registerAdClick} />
-            </div>
-
-            {/* GRID OF FEATURED NICHE CHANNELS */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="niche-channels">
-              <div className="flex justify-between items-end pb-4 border-b border-gray-105 mb-6">
-                <div>
-                  <h2 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest leading-none">Authority Channels</h2>
-                  <h3 className="text-lg font-bold font-display text-gray-900 mt-1">Explore Topic Cluster Streams</h3>
+            {/* CLEAN CATEGORY FILTERS BAR INSTEAD OF BULKY GRID */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="category-filter-bar">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
+                <div className="text-left space-y-1">
+                  <span className="text-[10px] font-mono font-extrabold text-orange-650 bg-orange-50 px-2.5 py-1 rounded text-orange-600 uppercase tracking-widest leading-none">
+                    Sports Science Portals
+                  </span>
+                  <h3 className="text-xl md:text-2xl font-black font-display text-gray-900 uppercase tracking-tight m-0 pt-1">
+                    Explore Research Fields
+                  </h3>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {categories.map((cat) => (
+                <div className="flex flex-wrap gap-2">
                   <button
-                    key={cat.id}
                     onClick={() => {
-                      setActiveCategoryId(cat.id);
-                      setCurrentNiche(cat.id);
-                      setActivePage('category');
-                      window.scrollTo(0, 0);
+                      setActiveCategoryId(null);
+                      setCurrentNiche('all');
+                      setActivePage('home');
                     }}
-                    className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-3xs p-4 flex flex-col items-start gap-3 hover:shadow-md hover:border-indigo-100 text-left transition-all cursor-pointer"
+                    className={`px-4 py-2 rounded-full text-xs font-mono font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer border ${
+                      activeCategoryId === null
+                        ? 'bg-slate-900 border-slate-900 text-white shadow-xs'
+                        : 'bg-white border-gray-200 hover:border-gray-400 text-gray-600 hover:text-gray-950'
+                    }`}
                   >
-                    <div className="w-full h-24 rounded-xl overflow-hidden bg-gray-50">
-                      <img 
-                        src={cat.image} 
-                        alt={cat.name} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="text-xs font-mono font-bold text-gray-550 uppercase">Channel</h4>
-                      <h3 className="text-sm font-bold font-display text-gray-900 leading-tight">{cat.name}</h3>
-                    </div>
+                    All Disciplines
                   </button>
-                ))}
+                  {categories.map((cat) => {
+                    const articleCount = articles.filter(a => a.categoryId === cat.id).length;
+                    const isActive = activeCategoryId === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          setActiveCategoryId(cat.id);
+                          setCurrentNiche(cat.id);
+                          setActivePage('category');
+                          window.scrollTo(0, 0);
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-mono font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 border ${
+                          isActive
+                            ? 'bg-orange-600 border-orange-600 text-white shadow-xs'
+                            : 'bg-white border-gray-200 hover:border-gray-400 text-gray-600 hover:text-gray-950'
+                        }`}
+                      >
+                        <span>{cat.name}</span>
+                        <span className={`font-sans font-bold text-[10px] px-1.5 py-0.5 rounded-full leading-none transition-all ${
+                          isActive ? 'bg-orange-700 text-orange-100' : 'bg-gray-100 text-gray-500'
+                        }`}>
+                          {articleCount}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </section>
 
@@ -539,7 +614,7 @@ export default function App() {
                     <h3 className="text-xs uppercase font-mono tracking-widest text-gray-400 font-bold leading-none">Latest Systematic Entries</h3>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+                  <div className="grid grid-cols-1 gap-5">
                     {visibleLatestArticles.map((art) => (
                       <article 
                         key={art.id}
@@ -548,32 +623,44 @@ export default function App() {
                           setActivePage('post');
                           window.scrollTo(0, 0);
                         }}
-                        className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition-all cursor-pointer group"
+                        className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row gap-5 hover:shadow-lg hover:border-orange-500/10 transition-all duration-300 cursor-pointer group relative"
                       >
-                        <div className="w-full sm:w-48 h-36 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                        <div className="w-full sm:w-52 h-40 rounded-xl overflow-hidden bg-slate-50 flex-shrink-0 relative">
                           <img 
                             src={art.featuredImage} 
                             alt={art.title} 
-                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                           />
+                          <span className="absolute top-2.5 left-2.5 bg-slate-900/80 backdrop-blur-md text-[9px] font-mono font-bold text-white uppercase tracking-widest px-2 py-0.5 rounded border border-white/5">
+                            {categories.find(c => c.id === art.categoryId)?.name || 'Blog'}
+                          </span>
                         </div>
 
-                        <div className="flex-1 flex flex-col justify-between py-1 space-y-3">
-                          <div className="space-y-1.5">
-                            <span className="text-[10px] font-mono font-bold text-indigo-600 uppercase bg-indigo-50 px-2 py-0.5 rounded">
-                              {categories.find(c => c.id === art.categoryId)?.name}
-                            </span>
-                            <h3 className="text-sm sm:text-base font-extrabold font-display leading-tight text-gray-900 group-hover:text-indigo-600 transition-colors">
+                        <div className="flex-1 flex flex-col justify-between py-0.5">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-extrabold text-orange-600 uppercase bg-orange-50/70 px-2 py-0.5 rounded">
+                                {categories.find(c => c.id === art.categoryId)?.name}
+                              </span>
+                              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-gray-400">
+                                <Clock className="w-3 h-3 text-gray-350" /> {art.readTime || '5 min read'}
+                              </span>
+                            </div>
+                            
+                            <h3 className="text-base sm:text-lg font-extrabold font-display leading-snug text-gray-905 group-hover:text-orange-650 transition-colors">
                               {art.title}
                             </h3>
-                            <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                            <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed font-light">
                               {art.excerpt}
                             </p>
                           </div>
 
-                          <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono">
-                            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {art.publishDate}</span>
-                            <span className="text-indigo-600 font-bold">Discover Entry &rarr;</span>
+                          <div className="pt-4 flex items-center justify-between border-t border-gray-50 mt-3 text-[11px] text-gray-450 font-mono">
+                            <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-gray-400" /> {art.publishDate}</span>
+                            <div className="flex items-center gap-1 text-orange-600 font-bold group-hover:text-orange-700 transition-colors">
+                              <span>Read Blueprint</span>
+                              <span className="transform group-hover:translate-x-1.5 transition-transform duration-200 text-sm font-light">&rarr;</span>
+                            </div>
                           </div>
                         </div>
                       </article>
@@ -602,13 +689,13 @@ export default function App() {
 
                 </div>
 
-                {/* COLUMN B (lg:col-span-4): Sideways Trending & Most Popular List */}
-                <aside className="lg:col-span-4 space-y-8">
+                {/* COLUMN B (lg:col-span-4): Sideways Trending & Key Insights */}
+                <aside className="lg:col-span-4 space-y-6">
                   
                   {/* Trending segment */}
-                  <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-3xs space-y-4">
-                    <h3 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1 border-b border-gray-50 pb-2">
-                      <TrendingUp className="w-4 h-4 text-emerald-500" /> Weekly Popularity metrics
+                  <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-3xs space-y-4">
+                    <h3 className="text-xs font-mono font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 border-b border-gray-50 pb-2.5">
+                      <TrendingUp className="w-4 h-4 text-orange-500 animate-pulse" /> Weekly Popularity tracks
                     </h3>
 
                     <div className="space-y-4">
@@ -620,17 +707,17 @@ export default function App() {
                             setActivePage('post');
                             window.scrollTo(0, 0);
                           }}
-                          className="flex items-start gap-3 cursor-pointer group"
+                          className="flex items-start gap-3.5 cursor-pointer group pb-3 last:pb-0 border-b border-slate-50 last:border-b-0"
                         >
-                          <span className="text-lg font-mono font-bold text-gray-300 w-5 flex-shrink-0">
+                          <span className="text-base font-mono font-black text-gray-305 text-gray-300 w-5 flex-shrink-0 group-hover:text-orange-500 transition-colors">
                             {(idx + 1).toString().padStart(2, '0')}
                           </span>
                           <div className="space-y-0.5">
-                            <h4 className="text-xs font-bold font-display text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight">
+                            <h4 className="text-xs sm:text-sm font-bold font-display text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 leading-tight">
                               {art.title}
                             </h4>
-                            <span className="text-[9px] text-gray-400 font-mono font-bold uppercase block tracking-wider">
-                              {art.views} Reads
+                            <span className="text-[9px] text-gray-400 font-mono font-bold uppercase tracking-wider block">
+                              {art.views.toLocaleString()} Readers
                             </span>
                           </div>
                         </div>
@@ -638,36 +725,18 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Dynamic Ad Placement - Sidebar */}
+                  {/* Clean Partner Promo Spotlight */}
                   {adSettings.enableSidebar && (
-                    <div className="bg-amber-50/50 rounded-2xl border border-amber-250/60 p-4 text-center relative overflow-hidden">
-                      <span className="absolute top-1 left-2 text-[8px] font-mono text-amber-500 uppercase tracking-widest font-bold">AdSense Placement - Sidebar Tower</span>
-                      <div className="py-8 space-y-1.5 font-sans justify-center">
-                        <span className="text-gray-900 font-bold block text-xs">Maximize Muscle Protein Synthesis</span>
-                        <span className="text-gray-550 text-[10px] leading-normal font-mono block">Zero sugar, third-party tested isolates 25% off. Coupon: RECOVERY</span>
-                        <button className="bg-amber-400 font-bold text-[9px] uppercase tracking-wider p-1 rounded mt-2 px-3">Shop Offer</button>
+                    <div className="bg-orange-50/50 rounded-2xl border border-orange-100/60 p-5 text-center relative overflow-hidden">
+                      <div className="space-y-2 font-sans justify-center">
+                        <span className="bg-orange-100 text-orange-600 font-mono font-bold text-[8px] uppercase tracking-widest px-2.5 py-0.5 rounded border border-orange-200/40">
+                          Partner Spotlight
+                        </span>
+                        <span className="text-gray-900 font-bold block text-xs mt-1">High-Yield Micronutrients Isolated</span>
+                        <span className="text-gray-500 text-[10px] leading-normal font-sans block">Pure active ingredients, independent-tested compound elements.</span>
                       </div>
                     </div>
                   )}
-
-                  {/* Operational Social Proof / Community metrics */}
-                  <div className="bg-slate-900 text-white rounded-2xl p-5 shadow-sm space-y-4">
-                    <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-                      <Users className="w-4 h-4 text-orange-400" />
-                      <h4 className="text-xs font-mono font-bold text-slate-300 uppercase tracking-widest leading-none">Fitness Community</h4>
-                    </div>
-
-                    <div className="space-y-3 text-xs">
-                      <div className="flex justify-between items-center bg-slate-950/40 p-2.5 rounded-lg border border-slate-800">
-                        <span className="text-slate-400">Newsletter Club:</span>
-                        <span className="font-extrabold text-white">48,200+ members</span>
-                      </div>
-                      <div className="flex justify-between items-center bg-slate-950/40 p-2.5 rounded-lg border border-slate-800">
-                        <span className="text-slate-400">Monthly Viewers:</span>
-                        <span className="font-extrabold text-white">250,000+ reads</span>
-                      </div>
-                    </div>
-                  </div>
 
                 </aside>
 
@@ -743,6 +812,28 @@ export default function App() {
           />
         )}
 
+        {/* VIEW 6: PROPER DEDICATED ADMIN PANEL PAGE */}
+        {activePage === 'admin' && (
+          <AdminPanel
+            articles={articles}
+            categories={categories}
+            comments={comments}
+            adSettings={adSettings}
+            globalSEO={globalSEO}
+            subscribers={subscribers}
+            onSaveArticles={syncArticles}
+            onSaveAdSettings={syncAdSettings}
+            onSaveSEO={syncSEO}
+            onApproveComment={approveComment}
+            onDeleteComment={deleteComment}
+            onResetToSeeds={handleResetToSeeds}
+            onClose={() => {
+              setActivePage('home');
+              window.scrollTo(0, 0);
+            }}
+          />
+        )}
+
       </div>
 
       {/* CORE FOOTER */}
@@ -774,24 +865,7 @@ export default function App() {
         }}
       />
 
-      {/* MODAL 1: ADMINISTRATIVE WORKSPACE */}
-      {isAdminOpen && (
-        <AdminPanel
-          articles={articles}
-          categories={categories}
-          comments={comments}
-          adSettings={adSettings}
-          globalSEO={globalSEO}
-          subscribers={subscribers}
-          onSaveArticles={syncArticles}
-          onSaveAdSettings={syncAdSettings}
-          onSaveSEO={syncSEO}
-          onApproveComment={approveComment}
-          onDeleteComment={deleteComment}
-          onResetToSeeds={handleResetToSeeds}
-          onClose={() => setIsAdminOpen(false)}
-        />
-      )}
+
 
       {/* MODAL 2: TRUST COMPLIANCE POLICY PAGES SCREEN */}
       {trustPageId && (

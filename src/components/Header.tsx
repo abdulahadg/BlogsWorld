@@ -107,12 +107,6 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-xs backdrop-blur-md bg-opacity-95" id="authority-header">
-      {/* Top minimal news ticker / quick affiliate notice */}
-      <div className="w-full bg-slate-900 text-white text-xs py-1 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2">
-        <span className="bg-orange-500 text-slate-950 font-bold px-1.5 py-0.5 rounded-sm uppercase text-[10px]">Affiliate Notice</span>
-        <span>As an Amazon & Brand Associate we earn from qualifying purchases. No extra cost to you.</span>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo Brand elements */}

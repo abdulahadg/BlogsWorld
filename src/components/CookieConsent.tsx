@@ -50,15 +50,15 @@ export default function CookieConsent({ onOpenPrivacyPage, enabled = true }: Coo
     >
       <div className="bg-slate-900 border border-slate-800 text-white p-5 rounded-2xl shadow-2xl space-y-4 relative overflow-hidden">
         {/* Glow decoration */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400"></div>
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-500 via-amber-400 to-emerald-500"></div>
 
         <div className="flex items-start gap-3">
-          <div className="bg-indigo-950 p-2 rounded-xl border border-indigo-805 border-indigo-800 flex-shrink-0 mt-0.5">
-            <Shield className="w-5 h-5 text-indigo-400" />
+          <div className="bg-orange-950/80 p-2 rounded-xl border border-orange-900/40 flex-shrink-0 mt-0.5">
+            <Shield className="w-5 h-5 text-orange-400" />
           </div>
           <div className="space-y-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-indigo-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-900/60 leading-none">
+              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-orange-400 bg-orange-950/60 px-2 py-0.5 rounded border border-orange-900/40 leading-none">
                 Privacy Node
               </span>
               <h4 className="text-xs font-bold font-display text-white">AdSense GDPR / CCPA Compliance Verification</h4>
@@ -72,15 +72,15 @@ export default function CookieConsent({ onOpenPrivacyPage, enabled = true }: Coo
         <div className="pt-1 flex flex-col xs:flex-row gap-2 justify-between items-center bg-slate-950/40 p-3 rounded-xl border border-slate-850">
           <button
             onClick={() => onOpenPrivacyPage('privacy')}
-            className="text-[10px] text-indigo-400 hover:text-indigo-300 font-mono font-medium hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-[10px] text-orange-400 hover:text-orange-300 font-mono font-medium hover:underline flex items-center gap-1 cursor-pointer"
           >
-            Review Cookie Disclousures &rarr;
+            Review Cookie Disclosures &rarr;
           </button>
           
           <div className="flex items-center gap-2 w-full xs:w-auto">
             <button
               onClick={handleAccept}
-              className="w-full xs:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-[10px] px-4 py-2 rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-1"
+              className="w-full text-center xs:w-auto bg-orange-600 hover:bg-orange-700 text-white font-extrabold text-[10px] px-4 py-2 rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-1"
             >
               <Check className="w-3 h-3" />
               Accept Parameters

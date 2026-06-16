@@ -199,18 +199,18 @@ export default function ContactPage({ onGoHome }: ContactPageProps) {
               </div>
             ) : (
               /* MODERN CONTACT FORM CARD */
-              <div className="bg-white border border-gray-200 rounded-3xl p-6 md:p-8 shadow-3xs" id="contact-form-card">
-                <div className="space-y-4 mb-6">
-                  <h2 className="text-lg font-black font-display text-gray-900 m-0 uppercase tracking-tight">Send a Message</h2>
-                  <p className="text-xs text-gray-500 font-light">
-                    Have questions or feedback? Drop us a message below and we will get back to you as soon as possible.
+              <div className="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-xs" id="contact-form-card">
+                <div className="space-y-3 mb-6">
+                  <h2 className="text-xl font-bold font-display text-gray-900 m-0 uppercase tracking-tight">Send a Message</h2>
+                  <p className="text-sm text-gray-500 font-light">
+                    Have questions or feedback? Drop us a line below and our credentialed performance analysts will reply based on your selected priority.
                   </p>
                 </div>
 
-                <form onSubmit={handleContactSubmit} className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form onSubmit={handleContactSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 mb-1">
+                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-600 mb-1.5 select-none">
                         Full Name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -219,11 +219,11 @@ export default function ContactPage({ onGoHome }: ContactPageProps) {
                         placeholder="e.g. Johnathan Doe"
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
-                        className="w-full border border-gray-200 rounded-xl p-3 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500 transition-all duration-200 bg-slate-50/10 focus:bg-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 mb-1">
+                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-600 mb-1.5 select-none">
                         Email Address <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -232,20 +232,20 @@ export default function ContactPage({ onGoHome }: ContactPageProps) {
                         placeholder="e.g. jdoe@company.com"
                         value={formEmail}
                         onChange={(e) => setFormEmail(e.target.value)}
-                        className="w-full border border-gray-200 rounded-xl p-3 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500 transition-all duration-200 bg-slate-50/10 focus:bg-white"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 mb-1">
+                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-600 mb-1.5 select-none">
                         Inquiry Topic
                       </label>
                       <select
                         value={formDept}
                         onChange={(e) => setFormDept(e.target.value)}
-                        className="w-full border border-gray-100 bg-white rounded-xl p-3 text-xs focus:outline-none focus:ring-1 focus:ring-orange-550 focus:border-orange-500 font-sans"
+                        className="w-full border border-gray-200 bg-white rounded-xl py-3 px-4 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500 font-sans transition-all duration-200 cursor-pointer"
                       >
                         {departments.map((d, idx) => (
                           <option key={idx} value={d.value}>{d.name} ({d.sla})</option>
@@ -253,19 +253,19 @@ export default function ContactPage({ onGoHome }: ContactPageProps) {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 mb-1">
+                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-600 mb-1.5 select-none">
                         Urgency & Priority Class
                       </label>
-                      <div className="flex gap-2.5 mt-1.5">
+                      <div className="flex gap-2.5 mt-1">
                         {['Standard', 'Medium', 'Critical'].map((pri) => (
                           <button
                             key={pri}
                             type="button"
                             onClick={() => setFormPriority(pri)}
-                            className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
+                            className={`flex-1 py-3 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer border ${
                               formPriority === pri 
-                                ? 'bg-orange-600 border-orange-600 text-white shadow-xs' 
-                                : 'bg-gray-50 hover:bg-gray-100 text-gray-500 border-gray-150'
+                                ? 'bg-orange-600 border-orange-600 text-white shadow-sm' 
+                                : 'bg-gray-50 hover:bg-gray-100 text-gray-500 border-gray-200'
                             }`}
                           >
                             {pri}
@@ -276,24 +276,24 @@ export default function ContactPage({ onGoHome }: ContactPageProps) {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 mb-1">
-                      Message <span className="text-red-550 text-red-500">*</span>
+                    <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-600 mb-1.5 select-none">
+                      Message <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       required
                       rows={5}
-                      placeholder="Write your message here..."
+                      placeholder="Write your inquiry or question here..."
                       value={formMessage}
                       onChange={(e) => setFormMessage(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                      className="w-full border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500 transition-all duration-200 bg-slate-50/10 focus:bg-white resize-y"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl py-3 text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-3xs"
+                    className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl py-3.5 px-4 text-xs sm:text-sm font-extrabold uppercase tracking-widest hover:bg-slate-800 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
                   >
-                    <Send className="w-4 h-4" /> Send Message
+                    <Send className="w-4 h-4 text-orange-400" /> Send Message & Dispatch
                   </button>
                 </form>
               </div>

@@ -29,8 +29,8 @@ export default function AboutPage({ onGoHome, onSelectCategory, categories }: Ab
       name: "Sarah Jenkins, CSCS",
       role: "Lead Strength Analyst & Weightlifting Coach",
       bio: "Sarah is a Certified Strength and Conditioning Specialist and competitive lift mechanics expert. She manages our high-pressure load assessment gym and drafts barbell hypertrophy templates.",
-      avatarBg: "bg-slate-900 border-indigo-500/20",
-      iconColor: "text-indigo-400"
+      avatarBg: "bg-slate-900 border-orange-500/20",
+      iconColor: "text-orange-400"
     },
     {
       name: "Marcus Thorne, MS, PES",
@@ -56,7 +56,7 @@ export default function AboutPage({ onGoHome, onSelectCategory, categories }: Ab
       {/* Top Breadcrumb Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <div className="flex items-center gap-2 text-xs font-mono text-gray-500 select-none">
-          <button onClick={onGoHome} className="hover:text-indigo-600 transition-colors cursor-pointer">HOME</button>
+          <button onClick={onGoHome} className="hover:text-orange-600 transition-colors cursor-pointer">HOME</button>
           <span>/</span>
           <span className="text-gray-900 font-bold uppercase">ABOUT OUR FITNESS AUTHORITY</span>
         </div>

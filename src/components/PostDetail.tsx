@@ -254,15 +254,17 @@ export default function PostDetail({
             {/* Table of Contents section */}
             <div className="bg-slate-50 border border-gray-200/50 rounded-2xl p-5 mb-8">
               <div className="flex items-center gap-2 mb-3">
-                <span className="p-1.5 bg-indigo-100 text-indigo-700 rounded-md">
+                <span className="p-1.5 bg-orange-100 text-orange-700 rounded-md">
                   <BookOpen className="w-4 h-4" />
                 </span>
                 <h3 className="text-sm font-bold font-display text-gray-900 tracking-tight uppercase">Contents Inside</h3>
               </div>
-              <ul className="space-y-1.5 text-xs text-indigo-700 font-medium font-sans">
+              <ul className="space-y-1.5 text-xs text-orange-750 font-medium font-sans">
                 <li><a href="#section-introduction" className="hover:underline flex items-center gap-1">1. Executive Overview & Baseline Problem</a></li>
                 <li><a href="#section-core-hardware" className="hover:underline flex items-center gap-1">2. Functional Core Mechanics Analysis</a></li>
-                <li><a href="#section-affiliate-selection" className="hover:underline flex items-center gap-1">3. Featured Product Deep-Dive & Evaluation</a></li>
+                {article.affiliateProduct && (
+                  <li><a href="#section-recommended-equipment" className="hover:underline flex items-center gap-1">3. Recommended Training Gear Analysis</a></li>
+                )}
                 <li><a href="#section-practical-steps" className="hover:underline flex items-center gap-1">4. Step-By-Step Integration Protocol</a></li>
                 <li><a href="#section-faqs" className="hover:underline flex items-center gap-1">5. Technical Frequently Asked Questions</a></li>
               </ul>
@@ -288,13 +290,13 @@ export default function PostDetail({
             {/* Dynamic AdSense Slot Mid Content */}
             <AdContainer slot="mid" settings={adSettings} onAdClick={onAdClick} className="my-8" />
 
-            {/* ARTICLE SECTION 2: Featured Affiliate Product Valuation Block */}
+            {/* ARTICLE SECTION 2: Recommended Equipment Recommendation Block */}
             {article.affiliateProduct && (
-              <div className="my-10 border-2 border-indigo-150 rounded-2xl overflow-hidden bg-white shadow-md" id="section-affiliate-selection">
+              <div className="my-10 border-2 border-orange-100 rounded-2xl overflow-hidden bg-white shadow-md animate-fade-in" id="section-recommended-equipment">
                 {/* Product Header Ribbon */}
                 <div className="bg-slate-900 text-white p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div>
-                    <span className="bg-yellow-500 text-slate-950 font-bold px-2 py-0.5 rounded-sm uppercase text-[9px] font-mono tracking-widest mb-1 inline-block">RECOMMENDED CHOICE</span>
+                    <span className="bg-orange-500 text-slate-950 font-bold px-2 py-0.5 rounded-sm uppercase text-[9px] font-mono tracking-widest mb-1 inline-block">RECOMMENDED EQUIPMENT</span>
                     <h3 className="text-base font-extrabold font-display leading-tight">{article.affiliateProduct.title}</h3>
                   </div>
                   <div className="flex items-center gap-1 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
@@ -315,7 +317,7 @@ export default function PostDetail({
                   
                   <div className="md:col-span-3 space-y-3">
                     <div className="text-xs font-medium text-gray-500">
-                      Brand: <span className="text-gray-900 font-bold">{article.affiliateProduct.brand}</span> • Estimate Cost Rating: <span className="text-indigo-600 font-bold tracking-tight">{article.affiliateProduct.priceRange}</span>
+                      Brand: <span className="text-gray-900 font-bold">{article.affiliateProduct.brand}</span> • Estimate Cost Rating: <span className="text-orange-600 font-bold tracking-tight">{article.affiliateProduct.priceRange}</span>
                     </div>
                     <p className="text-xs text-gray-600 leading-relaxed">
                       {article.affiliateProduct.description}
@@ -350,18 +352,18 @@ export default function PostDetail({
                   </div>
                 </div>
 
-                {/* CTA Action button */}
-                <div className="bg-slate-100 p-4 border-t border-gray-100 text-center flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <p className="text-xs text-gray-500 leading-tight text-center sm:text-left">
-                    *Outbound commissions are earned for product referrals at absolute zero supplemental cost to you.
-                  </p>
-                  <a 
-                    href="#buy"
-                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                  >
-                    Check Best Real-Time Pricing &rarr;
-                  </a>
-                </div>
+                 {/* CTA Action button */}
+                 <div className="bg-slate-100 p-4 border-t border-gray-100 text-center flex flex-col sm:flex-row justify-between items-center gap-4">
+                   <p className="text-[11px] text-gray-500 leading-tight text-center sm:text-left">
+                     *Expert Coaching Choice: Verified safe & recommended for high-performance biomechanical tension routines.
+                   </p>
+                   <a 
+                     href="#details"
+                     className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                   >
+                     Learn More & View Specs &arr;
+                   </a>
+                 </div>
               </div>
             )}
 
@@ -377,7 +379,7 @@ export default function PostDetail({
             {article.faqs && article.faqs.length > 0 && (
               <div className="my-10 border border-gray-150 rounded-2xl p-6 bg-white shadow-2xs" id="section-faqs">
                 <div className="flex items-center gap-2 mb-4">
-                  <HelpCircle className="w-5 h-5 text-indigo-600" />
+                  <HelpCircle className="w-5 h-5 text-orange-600" />
                   <h3 className="text-base font-extrabold font-display text-gray-950">Valuable FAQs & Answers</h3>
                 </div>
                 
@@ -400,14 +402,14 @@ export default function PostDetail({
                 className="w-16 h-16 rounded-full object-cover flex-shrink-0 border border-gray-200 shadow-2xs"
               />
               <div className="space-y-1.5">
-                <span className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 uppercase bg-slate-100 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-mono font-bold tracking-widest text-orange-600 uppercase bg-orange-50/80 px-2 py-0.5 rounded">
                   {author.role}
                 </span>
                 <h4 className="text-sm font-bold text-gray-900">{author.name}</h4>
                 <p className="text-xs text-gray-500 leading-relaxed max-w-lg">
                   {author.bio}
                 </p>
-                <div className="flex gap-3 text-xs text-indigo-500 pt-1">
+                <div className="flex gap-3 text-xs text-orange-600 font-medium pt-1">
                   {author.twitter && <span className="hover:underline cursor-pointer">{author.twitter}</span>}
                   {author.linkedin && <span className="hover:underline cursor-pointer">in/{author.linkedin}</span>}
                 </div>
@@ -425,7 +427,7 @@ export default function PostDetail({
             {/* Interactive Comment system */}
             <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-gray-50">
-                <MessageSquare className="w-4 h-4 text-indigo-600" />
+                <MessageSquare className="w-4 h-4 text-orange-600" />
                 <h3 className="text-xs uppercase font-mono font-bold text-gray-900 tracking-wider">Comments ({postComments.length})</h3>
               </div>
               
@@ -444,7 +446,7 @@ export default function PostDetail({
                   placeholder="Your display name..."
                   value={commentName}
                   onChange={(e) => setCommentName(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                  className="w-full border border-gray-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 />
                 <input
                   type="email"
@@ -452,7 +454,7 @@ export default function PostDetail({
                   placeholder="Your secure email..."
                   value={commentEmail}
                   onChange={(e) => setCommentEmail(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                  className="w-full border border-gray-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 />
                 <textarea
                   required
@@ -460,7 +462,7 @@ export default function PostDetail({
                   placeholder="What is your analysis?"
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                  className="w-full border border-gray-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 />
                 <button
                   type="submit"

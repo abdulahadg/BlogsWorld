@@ -71,6 +71,7 @@ export default function AdminPanel({
   const [affReview, setAffReview] = useState('');
   const [affPro1, setAffPro1] = useState('');
   const [affCon1, setAffCon1] = useState('');
+  const [showAffiliateFields, setShowAffiliateFields] = useState(false);
 
   // Ad Placement form states
   const [adsAbove, setAdsAbove] = useState(adSettings.enableAboveContent);
@@ -136,6 +137,7 @@ export default function AdminPanel({
       setAffReview(art.affiliateProduct.description);
       setAffPro1(art.affiliateProduct.pros[0] || '');
       setAffCon1(art.affiliateProduct.cons[0] || '');
+      setShowAffiliateFields(true);
     } else {
       setAffTitle('');
       setAffBrand('');
@@ -143,6 +145,7 @@ export default function AdminPanel({
       setAffReview('');
       setAffPro1('');
       setAffCon1('');
+      setShowAffiliateFields(false);
     }
 
     setActiveTab('create');
@@ -183,8 +186,8 @@ export default function AdminPanel({
       compiledArticle.faqs = [{ question: faqQ1, answer: faqA1 }];
     }
 
-    // Attach Affiliate if written
-    if (affTitle && affReview) {
+    // Attach Affiliate if enabled and written
+    if (showAffiliateFields && affTitle && affReview) {
       compiledArticle.affiliateProduct = {
         id: `prod-${Date.now()}`,
         title: affTitle,
@@ -276,8 +279,8 @@ export default function AdminPanel({
   const totalAdRevenueSimulated = ((totalViews / 1000) * adSettings.simulatedRPM).toFixed(2);
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-white rounded-3xl w-full max-w-6xl h-[92vh] flex flex-col shadow-2xl border border-gray-150 overflow-hidden">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="admin-workspace-page">
+      <div className="bg-white rounded-3xl w-full h-[85vh] flex flex-col shadow-xs border border-gray-150 overflow-hidden">
         
         {/* TOP BAR / NAVIGATION HEADER */}
         <div className="bg-slate-900 text-white p-4 sm:p-5 flex justify-between items-center flex-shrink-0">
@@ -323,7 +326,7 @@ export default function AdminPanel({
               <button
                 onClick={() => setActiveTab('dashboard')}
                 className={`w-full text-left rounded-xl p-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                  activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
+                  activeTab === 'dashboard' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
                 }`}
               >
                 <BarChart2 className="w-4 h-4" /> Dashboard
@@ -332,7 +335,7 @@ export default function AdminPanel({
               <button
                 onClick={() => setActiveTab('articles')}
                 className={`w-full text-left rounded-xl p-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                  activeTab === 'articles' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
+                  activeTab === 'articles' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
                 }`}
               >
                 <FileText className="w-4 h-4" /> Broadside Articles ({articles.length})
@@ -344,7 +347,7 @@ export default function AdminPanel({
                   setActiveTab('create');
                 }}
                 className={`w-full text-left rounded-xl p-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                  activeTab === 'create' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
+                  activeTab === 'create' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
                 }`}
               >
                 <PlusCircle className="w-4 h-4" /> New Article Draft
@@ -355,7 +358,7 @@ export default function AdminPanel({
               <button
                 onClick={() => setActiveTab('ads')}
                 className={`w-full text-left rounded-xl p-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                  activeTab === 'ads' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
+                  activeTab === 'ads' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
                 }`}
               >
                 <DollarSign className="w-4 h-4" /> Ad Placements (AdSense)
@@ -364,7 +367,7 @@ export default function AdminPanel({
               <button
                 onClick={() => setActiveTab('seo')}
                 className={`w-full text-left rounded-xl p-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                  activeTab === 'seo' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
+                  activeTab === 'seo' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
                 }`}
               >
                 <Settings className="w-4 h-4" /> Meta SEO / Sitemaps
@@ -373,7 +376,7 @@ export default function AdminPanel({
               <button
                 onClick={() => setActiveTab('comments')}
                 className={`w-full text-left rounded-xl p-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                  activeTab === 'comments' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
+                  activeTab === 'comments' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
                 }`}
               >
                 <CheckSquare className="w-4 h-4" /> Comment Mod ({comments.filter(c => !c.approved).length})
@@ -382,14 +385,14 @@ export default function AdminPanel({
               <button
                 onClick={() => setActiveTab('subscribers')}
                 className={`w-full text-left rounded-xl p-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                  activeTab === 'subscribers' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
+                  activeTab === 'subscribers' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-600 hover:bg-slate-205 hover:text-gray-900'
                 }`}
               >
                 <Users className="w-4 h-4" /> Subscribers List ({subscribers.length})
               </button>
             </nav>
 
-            <div className="p-2 border border-indigo-100 rounded-xl bg-indigo-50/50 text-[10px] text-indigo-700 leading-normal">
+            <div className="p-2 border border-orange-100 rounded-xl bg-orange-50/50 text-[10px] text-orange-700 leading-normal">
               <strong>Tip</strong>: Edits persist locally in your browser. Restoring seeds will reload sample files instantly.
             </div>
           </aside>
@@ -474,7 +477,7 @@ export default function AdminPanel({
                       setPostContent('');
                       setActiveTab('create');
                     }}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3- py-1.5 rounded-lg flex items-center gap-1 cursor-pointer"
+                    className="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-3- py-1.5 rounded-lg flex items-center gap-1 cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" /> Drafting Composer
                   </button>
@@ -608,75 +611,91 @@ export default function AdminPanel({
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] uppercase font-bold tracking-wider text-gray-700 mb-1">Core Article Body Content (Supports HTML paragraphs & structural maps)</label>
-                  <textarea
-                    rows={10}
-                    required
-                    placeholder="Write your article paragraphs here. Use <h2>, <h3> and standard tags for styling headings..."
-                    value={postContent}
-                    onChange={(e) => setPostContent(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg p-3 text-xs outline-none font-mono tracking-wide leading-relaxed focus:ring-1 focus:ring-indigo-500"
-                  />
-                </div>
+                 <div>
+                   <label className="block text-[10px] uppercase font-bold tracking-wider text-gray-700 mb-1">Article Body Content (Markdown format or standard HTML paragraphs/headings supported)</label>
+                   <textarea
+                     rows={12}
+                     required
+                     placeholder="Write your blog post here. You can use standard text paragraphs, markdown syntax, or basic HTML headings like <h2> and <h3> to structure your personal thoughts..."
+                     value={postContent}
+                     onChange={(e) => setPostContent(e.target.value)}
+                     className="w-full border border-gray-200 rounded-lg p-3 text-xs outline-none font-sans tracking-wide leading-relaxed focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                   />
+                 </div>
 
-                {/* COMPOSER ATTACHMENT: Product Affiliate Evaluator (Monetization Block) */}
-                <div className="p-4 bg-indigo-50/50 rounded-xl space-y-3 border border-indigo-100">
-                  <div className="flex items-center gap-1.5 text-indigo-850">
-                    <DollarSign className="w-4 h-4 text-indigo-600" />
-                    <span className="text-xs font-bold font-display uppercase tracking-wider">Affiliate Product Review & Star Ratings (Monetization Plug)</span>
-                  </div>
+                 {/* Toggle to optionally add affiliate products details */}
+                 <div className="flex items-center gap-2 py-2">
+                   <input
+                     id="toggle-affiliate-checkbox"
+                     type="checkbox"
+                     checked={showAffiliateFields}
+                     onChange={(e) => setShowAffiliateFields(e.target.checked)}
+                     className="w-4 h-4 text-orange-600 rounded border-gray-300 accent-orange-600 focus:ring-0 cursor-pointer"
+                   />
+                   <label htmlFor="toggle-affiliate-checkbox" className="text-xs font-bold text-gray-700 cursor-pointer select-none">
+                     Include Recommended Product Review (Optional Commercial Attachment)
+                   </label>
+                 </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Product Brand Title..."
-                      value={affTitle}
-                      onChange={(e) => setAffTitle(e.target.value)}
-                      className="border border-indigo-150 rounded-lg p-2 text-xs bg-white outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Brand Name..."
-                      value={affBrand}
-                      onChange={(e) => setAffBrand(e.target.value)}
-                      className="border border-indigo-150 rounded-lg p-2 text-xs bg-white outline-none"
-                    />
-                    <select
-                      value={affPrice}
-                      onChange={(e) => setAffPrice(e.target.value)}
-                      className="border border-indigo-150 rounded-lg p-2 text-xs bg-white"
-                    >
-                      <option value="$ - Free or cheap">$ - Cheap</option>
-                      <option value="$$ - Under $100">$$ - Mid Range</option>
-                      <option value="$$$ - Premium">$$$ - High End</option>
-                    </select>
-                  </div>
-                  
-                  <textarea
-                    rows={2}
-                    placeholder="Brief evaluation write-up for recommended product..."
-                    value={affReview}
-                    onChange={(e) => setAffReview(e.target.value)}
-                    className="w-full border border-indigo-150 rounded-lg p-2 text-xs bg-white outline-none"
-                  />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Pro point e.g. 100% local operation..."
-                      value={affPro1}
-                      onChange={(e) => setAffPro1(e.target.value)}
-                      className="border border-indigo-150 rounded-lg p-2 text-xs bg-white outline-none"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Con point e.g. Feels slightly heavy..."
-                      value={affCon1}
-                      onChange={(e) => setAffCon1(e.target.value)}
-                      className="border border-indigo-150 rounded-lg p-2 text-xs bg-white outline-none"
-                    />
-                  </div>
-                </div>
+                 {/* COMPOSER ATTACHMENT: Product Affiliate Evaluator (Monetization Block) */}
+                 {showAffiliateFields && (
+                   <div className="p-4 bg-orange-50/40 rounded-xl space-y-3 border border-orange-100">
+                     <div className="flex items-center gap-1.5 text-orange-850">
+                       <DollarSign className="w-4 h-4 text-orange-600" />
+                       <span className="text-xs font-bold font-display uppercase tracking-wider">Affiliate Product Review & Star Ratings (Monetization Plug)</span>
+                     </div>
+
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                       <input
+                         type="text"
+                         placeholder="Product Brand Title..."
+                         value={affTitle}
+                         onChange={(e) => setAffTitle(e.target.value)}
+                         className="border border-orange-100 rounded-lg p-2 text-xs bg-white outline-none"
+                       />
+                       <input
+                         type="text"
+                         placeholder="Brand Name..."
+                         value={affBrand}
+                         onChange={(e) => setAffBrand(e.target.value)}
+                         className="border border-orange-100 rounded-lg p-2 text-xs bg-white outline-none"
+                       />
+                       <select
+                         value={affPrice}
+                         onChange={(e) => setAffPrice(e.target.value)}
+                         className="border border-orange-100 rounded-lg p-2 text-xs bg-white"
+                       >
+                         <option value="$ - Free or cheap">$ - Cheap</option>
+                         <option value="$$ - Under $100">$$ - Mid Range</option>
+                         <option value="$$$ - Premium">$$$ - High End</option>
+                       </select>
+                     </div>
+                     
+                     <textarea
+                       rows={2}
+                       placeholder="Brief evaluation write-up for recommended product..."
+                       value={affReview}
+                       onChange={(e) => setAffReview(e.target.value)}
+                       className="w-full border border-orange-100 rounded-lg p-2 text-xs bg-white outline-none"
+                     />
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                       <input
+                         type="text"
+                         placeholder="Pro point e.g. 100% local operation..."
+                         value={affPro1}
+                         onChange={(e) => setAffPro1(e.target.value)}
+                         className="border border-orange-100 rounded-lg p-2 text-xs bg-white outline-none"
+                       />
+                       <input
+                         type="text"
+                         placeholder="Con point e.g. Feels slightly heavy..."
+                         value={affCon1}
+                         onChange={(e) => setAffCon1(e.target.value)}
+                         className="border border-orange-100 rounded-lg p-2 text-xs bg-white outline-none"
+                       />
+                     </div>
+                   </div>
+                 )}
 
                 {/* COMPOSER ATTACHMENT: Frequently Asked Question (FAQ Schema Block) */}
                 <div className="p-4 bg-teal-50/50 rounded-xl space-y-3 border border-teal-100">
@@ -714,7 +733,7 @@ export default function AdminPanel({
                   </button>
                   <button 
                     type="submit" 
-                    className="bg-indigo-650 hover:bg-indigo-700 bg-indigo-600 text-white font-extrabold px-6 py-2 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer"
+                    className="bg-orange-600 hover:bg-orange-700 text-white font-extrabold px-6 py-2 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer"
                   >
                     <Save className="w-4 h-4" /> Save draft & publish
                   </button>
@@ -749,7 +768,7 @@ export default function AdminPanel({
                           triggerNotification('Switched to premium interactive design simulator.');
                         }}
                         className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                          adLayoutMode === 'placeholder' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-550 hover:bg-white hover:text-gray-900'
+                          adLayoutMode === 'placeholder' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-550 hover:bg-white hover:text-gray-900'
                         }`}
                       >
                         Interactive Sim
@@ -761,7 +780,7 @@ export default function AdminPanel({
                           triggerNotification('Targeting actual raw AdSense script injections.');
                         }}
                         className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                          adLayoutMode === 'actual_code' ? 'bg-indigo-600 text-white shadow-xs' : 'text-gray-550 hover:bg-white hover:text-gray-900'
+                          adLayoutMode === 'actual_code' ? 'bg-orange-600 text-white shadow-xs' : 'text-gray-550 hover:bg-white hover:text-gray-900'
                         }`}
                       >
                         Inject Real Codes
@@ -993,7 +1012,7 @@ export default function AdminPanel({
                     <div className="text-right">
                       <button
                         type="submit"
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-xl text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer"
+                        className="bg-orange-600 hover:bg-orange-700 text-white font-extrabold px-6 py-3 rounded-xl text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer"
                       >
                         Save Placements Settings
                       </button>
@@ -1096,7 +1115,7 @@ export default function AdminPanel({
                     <div className="text-right">
                       <button
                         type="submit"
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-xl text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer"
+                        className="bg-orange-600 hover:bg-orange-700 text-white font-extrabold px-6 py-3 rounded-xl text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer"
                       >
                         Save GDPR & ads.txt Configurations
                       </button>
@@ -1293,7 +1312,7 @@ export default function AdminPanel({
 
                   <button
                     type="submit"
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer"
+                    className="bg-orange-600 hover:bg-orange-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer"
                   >
                     Save SEO settings
                   </button>
@@ -1302,7 +1321,7 @@ export default function AdminPanel({
                 {/* SITEMAP ENGINE INTEGRITY VIEW */}
                 <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3">
                   <div className="flex justify-between items-center bg-slate-900 text-white p-3 rounded-lg text-xs font-mono">
-                    <span className="flex items-center gap-1"><Monitor className="w-4 h-4 text-indigo-400" /> Active Dynamic XML Sitemap Node</span>
+                    <span className="flex items-center gap-1"><Monitor className="w-4 h-4 text-orange-400" /> Active Dynamic XML Sitemap Node</span>
                     <span className="text-emerald-400">STATUS: CRAWLABLE</span>
                   </div>
                   

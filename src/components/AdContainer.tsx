@@ -46,8 +46,8 @@ export default function AdContainer({
           placeholderCompany: 'Sponsored: Nexus Capital Investment Inverters',
           placeholderDesc: '⚡ High Efficiency 98.4% MPPT Solar Controllers. Accelerate capital deductions with green tax incentives. Tap to evaluate.',
           dimensionsClass: 'min-h-[100px] sm:min-h-[140px]',
-          bgColorClass: 'bg-indigo-50/40 border-indigo-150 text-indigo-950',
-          badgeClass: 'bg-indigo-550 bg-indigo-600 text-white',
+          bgColorClass: 'bg-orange-50/50 border-orange-100 text-slate-900',
+          badgeClass: 'bg-orange-650 text-white',
         };
       case 'mid':
         return {

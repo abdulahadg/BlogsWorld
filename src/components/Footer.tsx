@@ -110,8 +110,8 @@ export default function Footer({
                 </button>
               </li>
               <li>
-                <button onClick={() => onOpenPage('disclosure')} className="hover:text-white cursor-pointer text-left flex items-center gap-1 text-amber-300 hover:text-amber-200">
-                  Affiliate Disclosure <ArrowUpRight className="w-3 h-3" />
+                <button onClick={() => onOpenPage('disclosure')} className="hover:text-white cursor-pointer text-left flex items-center gap-1">
+                  Disclosure Policy <ArrowUpRight className="w-3 h-3" />
                 </button>
               </li>
               <li>
